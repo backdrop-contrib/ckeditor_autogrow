@@ -1,5 +1,5 @@
-CKEDitor Mentions
-=================
+CKEDitor Auto Grow
+==================
 
 This plugin for CKEDitor will provide the 'Auto grow' plugin.
 
