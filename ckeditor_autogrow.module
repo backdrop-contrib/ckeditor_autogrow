@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * Implements hook_ckeditor_plugins().
+ *
+ * Add autogrow CKeditor plugin
+ */
+function ckeditor_autogrow_ckeditor_plugins() {
+  $plugins['autogrow'] = array(
+    'path' => backdrop_get_path('module', 'ckeditor_autogrow') . '/js/plugins/autogrow',
+    'file' => 'plugin.js',
+    'enabled callback' => 'ckeditor_autogrow_plugin_check',
+  );
+
+  return $plugins;
+}
+
+function ckeditor_autogrow_plugin_check($format, $plugin_name) {
+  return TRUE;
+}

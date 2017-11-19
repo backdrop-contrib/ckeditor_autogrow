@@ -1,0 +1,5 @@
+name = CKeditor autogrow
+description = Autogrow plugin for ckeditor
+package = User interface
+type = module
+backdrop = 1.x
