@@ -20,6 +20,8 @@ Configuration
 Go to the *Text editor and formats* administration page (`admin/config/content/formats`)
 and configure each format.
 
+![](screenshot.png)
+
 Support
 -------
 
