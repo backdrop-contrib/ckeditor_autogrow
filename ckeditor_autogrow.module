@@ -15,6 +15,101 @@ function ckeditor_autogrow_ckeditor_plugins() {
   return $plugins;
 }
 
+/**
+ * Callback to enable auto grow pluin
+ */
 function ckeditor_autogrow_plugin_check($format, $plugin_name) {
-  return TRUE;
+  return $format->editor_settings['autogrow']['status'];
+}
+
+/**
+ * Implements hook_ckeditor_settings_alter().
+ */
+function ckeditor_autogrow_ckeditor_settings_alter(array &$settings, $format) {
+  if (!empty($format->editor_settings['autogrow']['status'])) {
+    $settings['autoGrow_minHeight'] = $format->editor_settings['autogrow']['min_height'];
+    $settings['autoGrow_maxHeight'] = $format->editor_settings['autogrow']['max_height'];
+    $settings['autoGrow_bottomSpace'] = $format->editor_settings['autogrow']['bottom_space'];
+    $settings['autoGrow_onStartup'] = $format->editor_settings['autogrow']['on_startup'];
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add settings for Auto Grow plugin.
+ */
+function ckeditor_autogrow_form_filter_admin_format_form_alter(&$form, $form_state) {
+  // Defaults.
+  $settings = isset($form_state['format']->editor_settings['autogrow']) ? $form_state['format']->editor_settings['autogrow'] : array();
+  $settings += array(
+    'status' => FALSE,
+    'min_height' => NULL,
+    'max_height' => NULL,
+    'bottom_space' => NULL,
+    'on_startup' => NULL,
+  );
+
+  $form['editor_settings']['plugins']['autogrow'] = array(
+    '#type' => 'fieldset',
+    '#title' => t("Auto Grow"),
+    '#tree' => TRUE,
+    '#attributes' => array(
+      'class' => array('ckeditor-plugin-autogrow'),
+    ),
+    '#parents' => array('editor_settings', 'autogrow'),
+  );
+
+  $form['editor_settings']['plugins']['autogrow']['status'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Enable"),
+    '#default_value' => $settings['status'],
+    '#description' => t("Enable Auto Grow plugin."),
+    '#attributes' => array(
+      'data-editor-autogrow' => 'status',
+    ),
+  );
+  $show_if_autogrow_enabled = array(
+    'visible' => array(
+      ':input[data-editor-autogrow="status"]' => array('checked' => TRUE),
+    ),
+  );
+
+  $form['editor_settings']['plugins']['autogrow']['min_height'] = array(
+    '#title' => t("Min height"),
+    '#type' => 'number',
+    '#min' => 0,
+    '#field_suffix' => t("px"),
+    '#default_value' => $settings['min_height'],
+    '#description' => t("The minimum height that the editor can assume when adjusting to content by using the Auto Grow feature."),
+    '#states' => $show_if_autogrow_enabled,
+  );
+
+  $form['editor_settings']['plugins']['autogrow']['max_height'] = array(
+    '#title' => t("Max height"),
+    '#type' => 'number',
+    '#min' => 0,
+    '#field_suffix' => t("px"),
+    '#default_value' => $settings['max_height'],
+    '#description' => t("Whether automatic editor height adjustment brought by the Auto Grow feature should happen on editor creation."),
+    '#states' => $show_if_autogrow_enabled,
+  );
+
+  $form['editor_settings']['plugins']['autogrow']['bottom_space'] = array(
+    '#title' => t("Bottom space"),
+    '#type' => 'number',
+    '#min' => 0,
+    '#field_suffix' => t("px"),
+    '#default_value' => $settings['bottom_space'],
+    '#description' => t("Extra vertical space to be added between the content and the editor bottom bar when adjusting editor height to content by using the Auto Grow feature."),
+    '#states' => $show_if_autogrow_enabled,
+  );
+
+  $form['editor_settings']['plugins']['autogrow']['on_startup'] = array(
+    '#title' => t("Adjust editor automatically"),
+    '#type' => 'checkbox',
+    '#default_value' => $settings['on_startup'],
+    '#description' => t("Whether automatic editor height adjustment brought by the Auto Grow feature should happen on editor creation."),
+    '#states' => $show_if_autogrow_enabled,
+  );
 }
