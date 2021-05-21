@@ -19,7 +19,9 @@ function ckeditor_autogrow_ckeditor_plugins() {
  * Callback to enable auto grow pluin
  */
 function ckeditor_autogrow_plugin_check($format, $plugin_name) {
-  return $format->editor_settings['autogrow']['status'];
+  if (!empty($format->editor_settings['autogrow'])) {
+    return $format->editor_settings['autogrow']['status'];
+  }
 }
 
 /**
